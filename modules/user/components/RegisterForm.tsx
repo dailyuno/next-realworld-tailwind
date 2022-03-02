@@ -1,13 +1,8 @@
 import Router from "next/router";
-import {
-  ChangeEvent,
-  ChangeEventHandler,
-  FormEvent,
-  useCallback,
-  useState,
-} from "react";
+import { FormEvent, useCallback, useState } from "react";
 import { mutate } from "swr";
 import TextField from "~/common/components/ui/TextField";
+import useForm from "../hooks/useForm";
 import { createUser } from "../services/createUser";
 
 type RegisterForm = {
@@ -29,20 +24,7 @@ type RegisterFormError = {
 };
 
 const RegisterForm: React.FC = () => {
-  const [form, setForm] = useState<RegisterForm>(initialForm);
-
-  const handleInputChange: ChangeEventHandler = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      const { name, value } = e.target;
-
-      setForm({
-        ...form,
-        [name]: value,
-      });
-    },
-    [form]
-  );
-
+  const { form, handleInputChange } = useForm<RegisterForm>(initialForm);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<RegisterFormError>({});
 
@@ -56,8 +38,6 @@ const RegisterForm: React.FC = () => {
         const { data, status } = await createUser(username, email, password);
 
         if (status !== 200 && data?.errors) {
-          console.log(data.errors);
-          console.log(typeof data.errors);
           setErrors(data.errors);
         }
 
