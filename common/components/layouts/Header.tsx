@@ -7,7 +7,9 @@ const Header = () => {
         <div className="flex justify-between">
           <div className="py-4">
             <Link href="/">
-              <a className="text-xl text-white">Next & Tailwind Blog</a>
+              <a className="text-xl text-white font-medium">
+                Next & Tailwind Blog
+              </a>
             </Link>
           </div>
           <ul className="flex items-center">
@@ -17,7 +19,7 @@ const Header = () => {
               </Link>
             </li>
             <li className="pl-4">
-              <Link href="/">
+              <Link href="/user/register">
                 <a className="text-sm text-gray-100">회원가입</a>
               </Link>
             </li>
