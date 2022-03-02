@@ -1,7 +1,9 @@
+import { AxiosResponse } from "axios";
 import Router from "next/router";
-import { FormEvent, useCallback, useState } from "react";
+import { FormEvent, SyntheticEvent, useCallback, useState } from "react";
 import { mutate } from "swr";
 import TextField from "~/common/components/ui/TextField";
+import useAsyncData from "~/common/hooks/useAsyncData";
 import useForm from "../hooks/useForm";
 import { createUser } from "../services/createUser";
 
@@ -17,41 +19,47 @@ const initialForm: RegisterForm = {
   password: "",
 };
 
-type RegisterFormError = {
+type ResponseError = {
   username?: string[];
   email?: string[];
   password?: string[];
 };
 
+type ResponseData = {
+  user: {
+    email: string;
+    image: string;
+    token: string;
+    username: string;
+  };
+};
+
 const RegisterForm: React.FC = () => {
   const { form, handleInputChange } = useForm<RegisterForm>(initialForm);
-  const [isLoading, setLoading] = useState<boolean>(false);
-  const [errors, setErrors] = useState<RegisterFormError>({});
+
+  const fetchData = useCallback(() => {
+    const { username, email, password } = form;
+    return createUser(username, email, password);
+  }, [form]);
+
+  const { isLoading, errors, data, loadData } = useAsyncData<
+    ResponseData,
+    ResponseError
+  >({
+    fetchData,
+  });
 
   const handleSubmit = useCallback(
     async (e: FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-      setLoading(true);
+      await loadData(e);
 
-      try {
-        const { username, email, password } = form;
-        const { data, status } = await createUser(username, email, password);
-
-        if (status !== 200 && data?.errors) {
-          setErrors(data.errors);
-        }
-
-        if (data?.user) {
-          window.localStorage.setItem("user", JSON.stringify(data.user));
-          mutate("user", data.user);
-          Router.push("/");
-        }
-      } catch (e) {
-      } finally {
-        setLoading(false);
+      if (data?.user) {
+        window.localStorage.setItem("user", JSON.stringify(data.user));
+        mutate("user", data.user);
+        Router.push("/");
       }
     },
-    [form]
+    [data, loadData]
   );
 
   return (
