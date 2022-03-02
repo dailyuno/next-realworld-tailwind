@@ -1,6 +1,13 @@
 import Router from "next/router";
-import { ChangeEvent, FormEvent, useCallback, useState } from "react";
+import {
+  ChangeEvent,
+  ChangeEventHandler,
+  FormEvent,
+  useCallback,
+  useState,
+} from "react";
 import { mutate } from "swr";
+import TextField from "~/common/components/ui/TextField";
 import { createUser } from "../services/createUser";
 
 type RegisterForm = {
@@ -15,10 +22,16 @@ const initialForm: RegisterForm = {
   password: "",
 };
 
+type RegisterFormError = {
+  username?: string[];
+  email?: string[];
+  password?: string[];
+};
+
 const RegisterForm: React.FC = () => {
   const [form, setForm] = useState<RegisterForm>(initialForm);
 
-  const handleInputChange = useCallback(
+  const handleInputChange: ChangeEventHandler = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       const { name, value } = e.target;
 
@@ -31,7 +44,7 @@ const RegisterForm: React.FC = () => {
   );
 
   const [isLoading, setLoading] = useState<boolean>(false);
-  const [errors, setErrors] = useState<{ key?: string[] }>({});
+  const [errors, setErrors] = useState<RegisterFormError>({});
 
   const handleSubmit = useCallback(
     async (e: FormEvent<HTMLFormElement>) => {
@@ -44,6 +57,7 @@ const RegisterForm: React.FC = () => {
 
         if (status !== 200 && data?.errors) {
           console.log(data.errors);
+          console.log(typeof data.errors);
           setErrors(data.errors);
         }
 
@@ -66,48 +80,41 @@ const RegisterForm: React.FC = () => {
       onSubmit={handleSubmit}
     >
       <div className="mb-4">
-        <label htmlFor="username" className="block text-base mb-1">
-          이름
-        </label>
-        <input
-          id="username"
+        <TextField
+          label="이름"
           name="username"
           type="text"
-          className="border border-solid border-gray-200 rounded-sm w-full px-4 py-3"
           value={form.username}
+          errors={errors.username ?? []}
           onChange={handleInputChange}
         />
       </div>
       <div className="mb-4">
-        <label htmlFor="email" className="block text-base mb-1">
-          이메일
-        </label>
-        <input
-          id="email"
+        <TextField
+          label="이메일"
           name="email"
           type="email"
-          className="border border-solid border-gray-200 rounded-sm w-full px-4 py-3"
           value={form.email}
+          errors={errors.email ?? []}
           onChange={handleInputChange}
         />
       </div>
       <div className="mb-4">
-        <label htmlFor="password" className="block text-base mb-1">
-          비밀번호
-        </label>
-        <input
-          id="password"
+        <TextField
+          label="비밀번호"
           name="password"
           type="password"
-          className="border border-solid border-gray-200 rounded-sm w-full px-4 py-3"
           value={form.password}
+          errors={errors.password ?? []}
           onChange={handleInputChange}
         />
       </div>
       <div className="flex justify-end">
         <button
           type="submit"
-          className="px-4 py-3 bg-blue-600 rounded text-sm text-gray-100"
+          className={`px-4 py-3 bg-blue-600 rounded text-sm text-gray-100 ${
+            isLoading && "bg-blue-400 cursor-not-allowed"
+          }`}
           disabled={isLoading}
         >
           회원가입
