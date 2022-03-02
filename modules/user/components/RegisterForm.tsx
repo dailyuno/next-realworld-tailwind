@@ -6,6 +6,7 @@ import TextField from "~/common/components/ui/TextField";
 import useAsyncData from "~/common/hooks/useAsyncData";
 import useForm from "../hooks/useForm";
 import { createUser } from "../services/createUser";
+import { ResponseUserData, ResponseUserError } from "../types/responseUser";
 
 type RegisterForm = {
   username: string;
@@ -19,21 +20,6 @@ const initialForm: RegisterForm = {
   password: "",
 };
 
-type ResponseError = {
-  username?: string[];
-  email?: string[];
-  password?: string[];
-};
-
-type ResponseData = {
-  user: {
-    email: string;
-    image: string;
-    token: string;
-    username: string;
-  };
-};
-
 const RegisterForm: React.FC = () => {
   const { form, handleInputChange } = useForm<RegisterForm>(initialForm);
 
@@ -43,8 +29,8 @@ const RegisterForm: React.FC = () => {
   }, [form]);
 
   const { isLoading, errors, data, loadData } = useAsyncData<
-    ResponseData,
-    ResponseError
+    ResponseUserData,
+    ResponseUserError
   >({
     fetchData,
   });
