@@ -1,7 +1,15 @@
-import { ChangeEvent, ChangeEventHandler, useCallback, useState } from "react";
+import {
+  ChangeEvent,
+  ChangeEventHandler,
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useState,
+} from "react";
 
 type Form<T> = {
   form: T;
+  setForm: Dispatch<SetStateAction<T>>;
   handleInputChange: ChangeEventHandler<Element>;
 };
 
@@ -19,7 +27,7 @@ function useForm<T>(initialData: T): Form<T> {
     [form]
   );
 
-  return { form, handleInputChange };
+  return { form, setForm, handleInputChange };
 }
 
 export default useForm;

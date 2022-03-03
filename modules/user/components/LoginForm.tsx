@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import TextField from "~/common/components/ui/TextField";
-import useForm from "../hooks/useForm";
+import useForm from "~/common/hooks/useForm";
 import useUserAction from "../hooks/useUserAction";
 import { loginUser } from "../services/loginUser";
 import { UserLoginForm } from "../types/userForm";
