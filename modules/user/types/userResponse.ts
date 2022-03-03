@@ -1,3 +1,5 @@
+import { User } from "./user";
+
 export type UserResponseError = {
   username?: string[];
   email?: string[];
@@ -5,10 +7,5 @@ export type UserResponseError = {
 };
 
 export type UserResponseData = {
-  user: {
-    email: string;
-    image: string;
-    token: string;
-    username: string;
-  };
+  user: User;
 };
