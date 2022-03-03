@@ -1,11 +1,9 @@
 import { useCallback } from "react";
 import TextField from "~/common/components/ui/TextField";
-import useAsyncData from "~/common/hooks/useAsyncData";
 import useForm from "../hooks/useForm";
 import useUserAction from "../hooks/useUserAction";
 import { loginUser } from "../services/loginUser";
 import { UserLoginForm } from "../types/userForm";
-import { UserResponseData, UserResponseError } from "../types/userResponse";
 
 const initialForm: UserLoginForm = {
   email: "",
@@ -15,19 +13,24 @@ const initialForm: UserLoginForm = {
 const LoginForm: React.FC = () => {
   const { form, handleInputChange } = useForm<UserLoginForm>(initialForm);
   const fetchData = useCallback(() => loginUser({ ...form }), [form]);
-  const { isLoading, errors, data, loadData } = useAsyncData<
-    UserResponseData,
-    UserResponseError
-  >({
-    fetchData,
-  });
-  const handleSubmit = useUserAction({ data, loadData });
+  const { isLoading, errors, handleSubmit } = useUserAction({ fetchData });
+  const anyErrors: [string, string[]][] = Object.entries(errors).filter(
+    ([type]) => Object.keys(initialForm).indexOf(type) < 0
+  );
 
   return (
     <form
       className="flex flex-col mt-8 w-[35rem] m-auto"
       onSubmit={handleSubmit}
     >
+      {anyErrors.map(([type, error], idx) => {
+        return (
+          <div key={idx} className="text-red-600 mb-2">
+            {type} {error}
+          </div>
+        );
+      })}
+
       <div className="mb-4">
         <TextField
           label="이메일"

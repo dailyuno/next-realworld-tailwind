@@ -1,11 +1,9 @@
 import { useCallback } from "react";
 import TextField from "~/common/components/ui/TextField";
-import useAsyncData from "~/common/hooks/useAsyncData";
 import useForm from "../hooks/useForm";
 import useUserAction from "../hooks/useUserAction";
 import { createUser } from "../services/createUser";
 import { UserRegisterForm } from "../types/userForm";
-import { UserResponseData, UserResponseError } from "../types/userResponse";
 
 const initialForm: UserRegisterForm = {
   username: "",
@@ -16,13 +14,7 @@ const initialForm: UserRegisterForm = {
 const RegisterForm: React.FC = () => {
   const { form, handleInputChange } = useForm<UserRegisterForm>(initialForm);
   const fetchData = useCallback(() => createUser({ ...form }), [form]);
-  const { isLoading, errors, data, loadData } = useAsyncData<
-    UserResponseData,
-    UserResponseError
-  >({
-    fetchData,
-  });
-  const handleSubmit = useUserAction({ data, loadData });
+  const { isLoading, errors, handleSubmit } = useUserAction({ fetchData });
 
   return (
     <form
