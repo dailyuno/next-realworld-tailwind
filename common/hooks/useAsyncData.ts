@@ -6,14 +6,14 @@ type AsyncData<T, D> = {
   isLoading: boolean;
   data: T;
   errors: D;
-  loadData(e: SyntheticEvent): Promise<void>;
+  loadData(e: SyntheticEvent): Promise<T>;
 };
 
-type Props = {
+export type useAsyncDataProps = {
   fetchData: () => Promise<AxiosResponse>;
 };
 
-function useAsyncData<T, D>({ fetchData }: Props): AsyncData<T, D> {
+function useAsyncData<T, D>({ fetchData }: useAsyncDataProps): AsyncData<T, D> {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [data, setData] = useState<T>({} as T);
   const [errors, setErrors] = useState<D>({} as D);
@@ -25,6 +25,7 @@ function useAsyncData<T, D>({ fetchData }: Props): AsyncData<T, D> {
     try {
       const { data: response } = await fetchData();
       setData(response);
+      return response;
     } catch (e: any) {
       setErrors(e?.response?.data?.errors ?? {});
     } finally {
