@@ -1,17 +1,14 @@
 import Link from "next/link";
-import Router from "next/router";
 import { MouseEvent } from "react";
-import { mutate } from "swr";
 import useUser from "~/modules/user/hooks/useUser";
+import logoutUser from "~/modules/user/utils/logoutUser";
 
 const Header: React.FC = () => {
   const loginUser = useUser();
 
   const handleLogout = (e: MouseEvent<HTMLElement>) => {
     e.preventDefault();
-    localStorage.removeItem("user");
-    mutate("user", null);
-    Router.push("/");
+    logoutUser();
   };
 
   return (
