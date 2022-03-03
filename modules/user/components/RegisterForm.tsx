@@ -1,10 +1,8 @@
-import { AxiosResponse } from "axios";
-import Router from "next/router";
-import { FormEvent, SyntheticEvent, useCallback, useState } from "react";
-import { mutate } from "swr";
+import { useCallback } from "react";
 import TextField from "~/common/components/ui/TextField";
 import useAsyncData from "~/common/hooks/useAsyncData";
 import useForm from "../hooks/useForm";
+import useUserAction from "../hooks/useUserAction";
 import { createUser } from "../services/createUser";
 import { UserRegisterForm } from "../types/userForm";
 import { UserResponseData, UserResponseError } from "../types/userResponse";
@@ -17,28 +15,14 @@ const initialForm: UserRegisterForm = {
 
 const RegisterForm: React.FC = () => {
   const { form, handleInputChange } = useForm<UserRegisterForm>(initialForm);
-
   const fetchData = useCallback(() => createUser({ ...form }), [form]);
-
   const { isLoading, errors, data, loadData } = useAsyncData<
     UserResponseData,
     UserResponseError
   >({
     fetchData,
   });
-
-  const handleSubmit = useCallback(
-    async (e: FormEvent<HTMLFormElement>) => {
-      await loadData(e);
-
-      if (data?.user) {
-        window.localStorage.setItem("user", JSON.stringify(data.user));
-        mutate("user", data.user);
-        Router.push("/");
-      }
-    },
-    [data, loadData]
-  );
+  const handleSubmit = useUserAction({ data, loadData });
 
   return (
     <form
