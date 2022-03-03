@@ -3,13 +3,22 @@ import { ChangeEvent, ChangeEventHandler } from "react";
 type Props = {
   label: string;
   name: string;
-  type: string;
+  type?: string;
   value: string | number;
   errors?: string[];
+  tag?: "input" | "textarea";
   onChange: ChangeEventHandler;
 };
 
-const TextField = ({ label, name, type, value, errors, onChange }: Props) => {
+const TextField = ({
+  label,
+  name,
+  type,
+  value,
+  errors,
+  tag = "input",
+  onChange,
+}: Props) => {
   const hasError = errors && errors.length > 0;
 
   return (
@@ -17,16 +26,29 @@ const TextField = ({ label, name, type, value, errors, onChange }: Props) => {
       <label htmlFor={name} className="text-base mb-1">
         {label}
       </label>
-      <input
-        id={name}
-        name={name}
-        type={type}
-        className={`border border-solid border-gray-200 rounded-sm w-full px-4 py-3 ${
-          hasError && "border-red-200"
-        }`}
-        value={value}
-        onChange={onChange}
-      />
+      {tag === "input" && (
+        <input
+          id={name}
+          name={name}
+          type={type}
+          className={`border border-solid border-gray-200 rounded-sm w-full px-4 py-3 ${
+            !!hasError ? "border-red-200" : ""
+          }`}
+          value={value}
+          onChange={onChange}
+        />
+      )}
+      {tag === "textarea" && (
+        <textarea
+          id={name}
+          name={name}
+          className={`border border-solid border-gray-200 rounded-sm w-full px-4 py-3 resize-none min-h-[20rem] ${
+            !!hasError ? "border-red-200" : ""
+          }`}
+          value={value}
+          onChange={onChange}
+        />
+      )}
       <div>
         {hasError &&
           errors.map((error, idx) => {
