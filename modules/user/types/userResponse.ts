@@ -1,10 +1,10 @@
-export type ResponseUserError = {
+export type UserResponseError = {
   username?: string[];
   email?: string[];
   password?: string[];
 };
 
-export type ResponseUserData = {
+export type UserResponseData = {
   user: {
     email: string;
     image: string;

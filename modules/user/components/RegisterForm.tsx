@@ -6,31 +6,23 @@ import TextField from "~/common/components/ui/TextField";
 import useAsyncData from "~/common/hooks/useAsyncData";
 import useForm from "../hooks/useForm";
 import { createUser } from "../services/createUser";
-import { ResponseUserData, ResponseUserError } from "../types/responseUser";
+import { UserRegisterForm } from "../types/userForm";
+import { UserResponseData, UserResponseError } from "../types/userResponse";
 
-type RegisterForm = {
-  username: string;
-  email: string;
-  password: string;
-};
-
-const initialForm: RegisterForm = {
+const initialForm: UserRegisterForm = {
   username: "",
   email: "",
   password: "",
 };
 
 const RegisterForm: React.FC = () => {
-  const { form, handleInputChange } = useForm<RegisterForm>(initialForm);
+  const { form, handleInputChange } = useForm<UserRegisterForm>(initialForm);
 
-  const fetchData = useCallback(() => {
-    const { username, email, password } = form;
-    return createUser(username, email, password);
-  }, [form]);
+  const fetchData = useCallback(() => createUser({ ...form }), [form]);
 
   const { isLoading, errors, data, loadData } = useAsyncData<
-    ResponseUserData,
-    ResponseUserError
+    UserResponseData,
+    UserResponseError
   >({
     fetchData,
   });
