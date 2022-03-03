@@ -6,7 +6,7 @@ export function loginUser({
   email,
   password,
 }: UserLoginForm): Promise<AxiosResponse> {
-  return axios.post(`${API_BASE_URL}/users`, {
+  return axios.post(`${API_BASE_URL}/users/login`, {
     user: {
       email,
       password,
