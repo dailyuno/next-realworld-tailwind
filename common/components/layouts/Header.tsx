@@ -1,8 +1,18 @@
 import Link from "next/link";
+import Router from "next/router";
+import { MouseEvent } from "react";
+import { mutate } from "swr";
 import useUser from "~/modules/user/hooks/useUser";
 
 const Header: React.FC = () => {
   const loginUser = useUser();
+
+  const handleLogout = (e: MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    localStorage.removeItem("user");
+    mutate("user", null);
+    Router.push("/");
+  };
 
   return (
     <header className="bg-slate-700">
@@ -39,7 +49,13 @@ const Header: React.FC = () => {
                   </span>
                 </li>
                 <li className="pl-4">
-                  <span className="text-sm text-gray-100">로그아웃</span>
+                  <a
+                    href="#"
+                    className="text-sm text-gray-100"
+                    onClick={handleLogout}
+                  >
+                    로그아웃
+                  </a>
                 </li>
               </>
             )}
