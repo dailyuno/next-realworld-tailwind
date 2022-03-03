@@ -1,7 +1,7 @@
-import axios, { AxiosError, AxiosResponse } from "axios";
+import axios, { AxiosResponse } from "axios";
 import { API_BASE_URL } from "~/common/utils/constants";
 
-export async function createUser(
+export function createUser(
   username: string,
   email: string,
   password: string
