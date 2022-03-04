@@ -9,10 +9,12 @@ export function createPost(
   return axios.post(
     `${API_BASE_URL}/articles`,
     {
-      title,
-      description,
-      body,
-      tagList,
+      article: {
+        title,
+        description,
+        body,
+        tagList,
+      },
     },
     {
       headers: {
