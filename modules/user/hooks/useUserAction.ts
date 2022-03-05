@@ -14,7 +14,8 @@ function useUserAction({ fetchData }: useAsyncDataProps) {
 
   const handleSubmit = useCallback(
     async (e: FormEvent<HTMLFormElement>) => {
-      const data = await loadData(e);
+      e.preventDefault();
+      const data = await loadData();
       setUser(data);
     },
     [loadData]

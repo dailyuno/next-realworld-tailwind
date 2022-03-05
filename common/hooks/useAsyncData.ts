@@ -6,7 +6,7 @@ type AsyncData<T, D> = {
   isLoading: boolean;
   data: T;
   errors: D;
-  loadData(e: SyntheticEvent): Promise<T>;
+  loadData(): Promise<T>;
 };
 
 export type useAsyncDataProps = {
@@ -18,8 +18,7 @@ function useAsyncData<T, D>({ fetchData }: useAsyncDataProps): AsyncData<T, D> {
   const [data, setData] = useState<T>({} as T);
   const [errors, setErrors] = useState<D>({} as D);
 
-  async function loadData(e: SyntheticEvent) {
-    e.preventDefault();
+  async function loadData() {
     setLoading(true);
 
     try {
