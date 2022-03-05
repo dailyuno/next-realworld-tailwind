@@ -1,52 +1,79 @@
-import { ChangeEvent, FormEvent, useCallback, useState } from "react";
+import { AxiosResponse } from "axios";
+import Router from "next/router";
+import {
+  ChangeEventHandler,
+  Dispatch,
+  FormEvent,
+  SetStateAction,
+  useCallback,
+} from "react";
 import TextField from "~/common/components/ui/TextField";
+import useAsyncData from "~/common/hooks/useAsyncData";
 import useForm from "~/common/hooks/useForm";
-import { Post } from "../types/post";
-
-type TagState = {
-  tag: string;
-};
-
-type PostForm = Post & TagState;
-
-type Props = {
-  initialForm?: PostForm;
-};
+import useUser from "~/modules/user/hooks/useUser";
+import { createPost } from "../services/createPost";
+import { PostForm } from "../types/postForm";
+import { PostResponseData, PostResponseError } from "../types/postResponse";
+import TagForm from "./TagForm";
 
 const initialState: PostForm = {
   title: "",
   description: "",
   body: "",
-  tag: "",
   tagList: [],
 };
 
-const PostForm: React.FC<Props> = ({ initialForm }: Props) => {
-  const { form, setForm, handleInputChange } = useForm<PostForm>(
-    initialForm ?? initialState
-  );
-  const [isLoading, setLoading] = useState(false);
+type Props = {
+  post?: PostForm;
+};
 
-  const handleTagSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const { tagList, tag } = form;
+const PostForm: React.FC<Props> = ({ post = initialState }: Props) => {
+  const loginUser = useUser();
+  const { form, setForm, handleInputChange } = useForm<PostForm>(post);
 
+  const fetchData = useCallback(() => {
+    return createPost({ ...form }, loginUser?.token);
+  }, [form, loginUser]);
+
+  const addTag = (tag: string) => {
+    const { tagList } = post;
     setForm({
-      ...form,
-      tag: "",
-      tagList: [...tagList, tag],
+      ...post,
+      tagList: tagList.concat(tag),
     });
   };
 
+  const removeTag = (tag: string) => {
+    const { tagList } = post;
+    setForm({
+      ...post,
+      tagList: tagList.filter((storedTag) => storedTag !== tag),
+    });
+  };
+
+  const { isLoading, errors, loadData } = useAsyncData<
+    PostResponseData,
+    PostResponseError
+  >({
+    fetchData,
+  });
+
+  const handleFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    await loadData();
+    Router.push("/");
+  };
+
   return (
-    <div>
-      <form>
+    <div className="max-w-[40rem] px-4 m-auto">
+      <form onSubmit={handleFormSubmit}>
         <div className="mb-4">
           <TextField
             label="제목"
             name="title"
             type="title"
-            value={form.title}
+            value={post.title}
+            errors={errors.title}
             onChange={handleInputChange}
           />
         </div>
@@ -55,7 +82,8 @@ const PostForm: React.FC<Props> = ({ initialForm }: Props) => {
             label="설명"
             name="description"
             type="description"
-            value={form.description}
+            value={post.description}
+            errors={errors.description}
             onChange={handleInputChange}
           />
         </div>
@@ -64,38 +92,26 @@ const PostForm: React.FC<Props> = ({ initialForm }: Props) => {
             label="내용"
             name="body"
             tag="textarea"
-            value={form.body}
+            value={post.body}
+            errors={errors.body}
             onChange={handleInputChange}
           />
         </div>
+
+        <TagForm tagList={post.tagList} addTag={addTag} removeTag={removeTag} />
+
+        <div className="flex justify-end">
+          <button
+            type="submit"
+            className={`px-4 py-3 bg-blue-600 rounded text-sm text-gray-100 ${
+              isLoading ? "bg-blue-400 cursor-not-allowed" : ""
+            }`}
+            disabled={isLoading}
+          >
+            글 작성
+          </button>
+        </div>
       </form>
-      <div className="mb-4">
-        <form onSubmit={handleTagSubmit}>
-          <TextField
-            label="태그"
-            name="tag"
-            type="text"
-            value={form.tag}
-            onChange={handleInputChange}
-          />
-        </form>
-        <ul className="flex">
-          {form.tagList.map((tag, idx) => {
-            return <li key={idx}>{tag}</li>;
-          })}
-        </ul>
-      </div>
-      <div className="flex justify-end">
-        <button
-          type="submit"
-          className={`px-4 py-3 bg-blue-600 rounded text-sm text-gray-100 ${
-            isLoading && "bg-blue-400 cursor-not-allowed"
-          }`}
-          disabled={isLoading}
-        >
-          글 작성
-        </button>
-      </div>
     </div>
   );
 };
