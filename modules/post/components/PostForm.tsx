@@ -32,17 +32,17 @@ const PostForm: React.FC<Props> = ({ post = initialState }: Props) => {
   const { form, setForm, handleInputChange } = useForm<PostForm>(post);
 
   const addTag = (tag: string) => {
-    const { tagList } = post;
+    const { tagList } = form;
     setForm({
-      ...post,
+      ...form,
       tagList: tagList.concat(tag),
     });
   };
 
   const removeTag = (tag: string) => {
-    const { tagList } = post;
+    const { tagList } = form;
     setForm({
-      ...post,
+      ...form,
       tagList: tagList.filter((storedTag) => storedTag !== tag),
     });
   };
@@ -58,8 +58,10 @@ const PostForm: React.FC<Props> = ({ post = initialState }: Props) => {
 
   const handleFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await loadData();
-    Router.push("/");
+    const data = await loadData();
+    if (data?.article) {
+      Router.push("/");
+    }
   };
 
   return (
@@ -70,7 +72,7 @@ const PostForm: React.FC<Props> = ({ post = initialState }: Props) => {
             label="제목"
             name="title"
             type="title"
-            value={post.title}
+            value={form.title}
             errors={errors.title}
             onChange={handleInputChange}
           />
@@ -80,7 +82,7 @@ const PostForm: React.FC<Props> = ({ post = initialState }: Props) => {
             label="설명"
             name="description"
             type="description"
-            value={post.description}
+            value={form.description}
             errors={errors.description}
             onChange={handleInputChange}
           />
@@ -90,13 +92,13 @@ const PostForm: React.FC<Props> = ({ post = initialState }: Props) => {
             label="내용"
             name="body"
             tag="textarea"
-            value={post.body}
+            value={form.body}
             errors={errors.body}
             onChange={handleInputChange}
           />
         </div>
 
-        <TagForm tagList={post.tagList} addTag={addTag} removeTag={removeTag} />
+        <TagForm tagList={form.tagList} addTag={addTag} removeTag={removeTag} />
 
         <div className="flex justify-end">
           <button
