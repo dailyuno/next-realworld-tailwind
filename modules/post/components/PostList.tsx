@@ -1,10 +1,11 @@
 import { useRouter } from "next/router";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import ErrorMessage from "~/common/components/util/ErrorMessage";
 import PreLoader from "~/common/components/util/PreLoader";
 import { API_BASE_URL } from "~/common/utils/constants";
 import fetcher from "~/common/utils/fetcher";
 import { getQuery } from "~/common/utils/getQuery";
+import Pagination from "~/modules/pagination/components/Pagination";
 import { Post } from "../types/post";
 import PostPreview from "./PostPreview";
 
@@ -18,6 +19,10 @@ const PostList: React.FC = () => {
   if (!!tag) {
     url = `${API_BASE_URL}/articles?tag=${tag}`;
   }
+
+  const updatePostList = (query: string) => {
+    return mutate(`${url}?${query}`);
+  };
 
   const { data, error } = useSWR(url, fetcher);
 
@@ -37,6 +42,8 @@ const PostList: React.FC = () => {
       {articles.map((article) => {
         return <PostPreview key={article.slug} post={article} />;
       })}
+
+      <Pagination total={articlesCount} limit={10} fetchData={updatePostList} />
     </div>
   );
 };
