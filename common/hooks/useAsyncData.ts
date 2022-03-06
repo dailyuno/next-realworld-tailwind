@@ -9,11 +9,9 @@ type AsyncData<T, D> = {
   loadData(): Promise<T>;
 };
 
-export type useAsyncDataProps = {
-  fetchData: () => Promise<AxiosResponse>;
-};
+export type useAsyncDataProps = () => Promise<AxiosResponse>;
 
-function useAsyncData<T, D>({ fetchData }: useAsyncDataProps): AsyncData<T, D> {
+function useAsyncData<T, D>(fetchData: useAsyncDataProps): AsyncData<T, D> {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [data, setData] = useState<T>({} as T);
   const [errors, setErrors] = useState<D>({} as D);

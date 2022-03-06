@@ -31,10 +31,6 @@ const PostForm: React.FC<Props> = ({ post = initialState }: Props) => {
   const loginUser = useUser();
   const { form, setForm, handleInputChange } = useForm<PostForm>(post);
 
-  const fetchData = useCallback(() => {
-    return createPost({ ...form }, loginUser?.token);
-  }, [form, loginUser]);
-
   const addTag = (tag: string) => {
     const { tagList } = post;
     setForm({
@@ -51,12 +47,14 @@ const PostForm: React.FC<Props> = ({ post = initialState }: Props) => {
     });
   };
 
+  const fetchData = useCallback(() => {
+    return createPost({ ...form }, loginUser?.token);
+  }, [form, loginUser]);
+
   const { isLoading, errors, loadData } = useAsyncData<
     PostResponseData,
     PostResponseError
-  >({
-    fetchData,
-  });
+  >(fetchData);
 
   const handleFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
