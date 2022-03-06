@@ -12,7 +12,7 @@ const CommentItem: React.FC<Props> = ({ comment }) => {
   const isAuthor = user.isLoggedIn && user.username === comment.author.username;
 
   return (
-    <div className="border border-solid border-gray-200 mb-4">
+    <div className="border border-solid border-gray-200 mt-4">
       <div className="p-6 text-sm">
         <p>{comment.body}</p>
       </div>
