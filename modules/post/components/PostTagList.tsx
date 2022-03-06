@@ -17,7 +17,7 @@ const PostTagList: React.FC<Props> = ({ tagList, link = true }: Props) => {
             </a>
           </Link>
         ) : (
-          <PostTag tag={tag} />
+          <PostTag key={tag} tag={tag} />
         );
       })}
     </div>
