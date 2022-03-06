@@ -1,6 +1,6 @@
 import Router from "next/router";
 import { mutate } from "swr";
-import { UserResponseData } from "../types/userResponse";
+import { UserResponseData } from "../types/response";
 
 function setUser(data: UserResponseData): void {
   if (data?.user) {
