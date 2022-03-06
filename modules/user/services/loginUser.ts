@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import { API_BASE_URL } from "~/common/utils/constants";
-import { UserLoginForm } from "../types/userForm";
+import { UserLoginForm } from "../types/form";
 
 export function loginUser({
   email,

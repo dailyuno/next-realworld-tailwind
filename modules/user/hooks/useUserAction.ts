@@ -1,6 +1,6 @@
 import { FormEvent, useCallback } from "react";
 import useAsyncData, { useAsyncDataProps } from "~/common/hooks/useAsyncData";
-import { UserResponseData, UserResponseError } from "../types/userResponse";
+import { UserResponseData, UserResponseError } from "../types/response";
 import setUser from "../utils/setUser";
 
 function useUserAction(fetchData: useAsyncDataProps) {
