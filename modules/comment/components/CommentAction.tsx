@@ -21,7 +21,7 @@ const CommentAction: React.FC<Props> = ({ commentId }: Props) => {
     return deleteComment({
       pid: String(pid),
       commentId,
-      token: user?.token,
+      token: user.token as string,
     });
   }, [pid, commentId, user]);
 

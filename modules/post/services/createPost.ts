@@ -1,11 +1,11 @@
 import axios, { AxiosResponse } from "axios";
 import { API_BASE_URL } from "~/common/utils/constants";
-import { PostForm } from "../types/postForm";
+import { CreatePostType } from "../types/request";
 
-export function createPost(
-  { title, description, body, tagList }: PostForm,
-  token: string = ""
-): Promise<AxiosResponse> {
+export function createPost({
+  post: { title, description, body, tagList },
+  token,
+}: CreatePostType): Promise<AxiosResponse> {
   return axios.post(
     `${API_BASE_URL}/articles`,
     {

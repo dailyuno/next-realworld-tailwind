@@ -48,7 +48,7 @@ const PostForm: React.FC<Props> = ({ post = initialState }: Props) => {
   };
 
   const fetchData = useCallback(() => {
-    return createPost({ ...form }, loginUser?.token);
+    return createPost({ post: form, token: loginUser.token as string });
   }, [form, loginUser]);
 
   const { isLoading, errors, loadData } = useAsyncData<
