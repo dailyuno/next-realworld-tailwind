@@ -3,7 +3,7 @@ import TextField from "~/common/components/ui/TextField";
 import useForm from "~/common/hooks/useForm";
 import useUserAction from "../hooks/useUserAction";
 import { createUser } from "../services/createUser";
-import { UserRegisterForm } from "../types/userForm";
+import { UserRegisterForm } from "../types/form";
 
 const initialForm: UserRegisterForm = {
   username: "",
@@ -14,7 +14,7 @@ const initialForm: UserRegisterForm = {
 const RegisterForm: React.FC = () => {
   const { form, handleInputChange } = useForm<UserRegisterForm>(initialForm);
   const fetchData = useCallback(() => createUser({ ...form }), [form]);
-  const { isLoading, errors, handleSubmit } = useUserAction({ fetchData });
+  const { isLoading, errors, handleSubmit } = useUserAction(fetchData);
 
   return (
     <form

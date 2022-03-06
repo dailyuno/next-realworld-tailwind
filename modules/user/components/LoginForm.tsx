@@ -3,7 +3,7 @@ import TextField from "~/common/components/ui/TextField";
 import useForm from "~/common/hooks/useForm";
 import useUserAction from "../hooks/useUserAction";
 import { loginUser } from "../services/loginUser";
-import { UserLoginForm } from "../types/userForm";
+import { UserLoginForm } from "../types/form";
 
 const initialForm: UserLoginForm = {
   email: "",
@@ -13,7 +13,7 @@ const initialForm: UserLoginForm = {
 const LoginForm: React.FC = () => {
   const { form, handleInputChange } = useForm<UserLoginForm>(initialForm);
   const fetchData = useCallback(() => loginUser({ ...form }), [form]);
-  const { isLoading, errors, handleSubmit } = useUserAction({ fetchData });
+  const { isLoading, errors, handleSubmit } = useUserAction(fetchData);
   const anyErrors: [string, string[]][] = Object.entries(errors).filter(
     ([type]) => Object.keys(initialForm).indexOf(type) < 0
   );
