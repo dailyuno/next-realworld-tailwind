@@ -32,8 +32,6 @@ const PostList: React.FC = () => {
     articlesCount: number;
   } = data;
 
-  console.log(articles, "after");
-
   return (
     <div>
       {articles.map((article) => {
