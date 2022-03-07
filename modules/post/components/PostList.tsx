@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import useSWR, { mutate } from "swr";
+import useSWR from "swr";
 import ErrorMessage from "~/common/components/util/ErrorMessage";
 import PreLoader from "~/common/components/util/PreLoader";
 import { API_BASE_URL } from "~/common/utils/constants";
@@ -9,20 +9,21 @@ import Pagination from "~/modules/pagination/components/Pagination";
 import { Post } from "../types/post";
 import PostPreview from "./PostPreview";
 
-const PostList: React.FC = () => {
+interface PostListProps {
+  limit?: number;
+}
+
+const PostList: React.FC<PostListProps> = ({ limit = 10 }: PostListProps) => {
   const router = useRouter();
   const { query } = router;
-  const { tag } = query;
+  const { tag, page } = query;
+  const currentPage = Number(page) || 1;
 
-  let url = `${API_BASE_URL}/articles`;
+  let url = `${API_BASE_URL}/articles?${getQuery(limit, currentPage - 1)}`;
 
   if (!!tag) {
-    url = `${API_BASE_URL}/articles?tag=${tag}`;
+    url += `&tag=${tag}`;
   }
-
-  const updatePostList = (query: string) => {
-    return mutate(`${url}?${query}`);
-  };
 
   const { data, error } = useSWR(url, fetcher);
 
@@ -43,7 +44,14 @@ const PostList: React.FC = () => {
         return <PostPreview key={article.slug} post={article} />;
       })}
 
-      <Pagination total={articlesCount} limit={10} fetchData={updatePostList} />
+      <div className="mb-4">
+        <Pagination
+          total={articlesCount}
+          limit={limit}
+          currentPage={currentPage}
+          pageCount={5}
+        />
+      </div>
     </div>
   );
 };
