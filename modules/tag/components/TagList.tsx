@@ -6,8 +6,8 @@ import useTagList from "../hooks/useTagList";
 const TagList: React.FC = () => {
   const { data, error } = useTagList();
 
-  if (!data) return <PreLoader />;
   if (error) return <ErrorMessage />;
+  if (!data) return <PreLoader />;
 
   const { tags } = data;
 
