@@ -4,7 +4,7 @@ import storage from "./storage";
 const updateOptions = () => {
   const user = storage("user");
 
-  if (!!user.token) {
+  if (!!user?.token) {
     return {
       headers: {
         Authorization: `Token ${user.token}`,
